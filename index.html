@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="zh-cn">
+<head>
+  <meta charset="utf-8">
+  <title>实习证明下载（身份证后6位）</title>
+  <style>
+    body { font-family: "Microsoft YaHei", sans-serif; margin: 40px; }
+    label, input, button { font-size: 16px; }
+    #msg { color: red; margin-top: 10px; }
+    .tip { margin-top: 10px; color: red; }
+  </style>
+</head>
+<body>
+  <h2>实习证明下载</h2>
+  <p class="tip">
+    请仔细核对姓名、性别、身份证号、学号、实习单位和实习时间。
+  </p>
+  <p>
+    <label for="id6">请输入本人身份证号后6位：</label>
+    <input type="text" id="id6" maxlength="6">
+    <button onclick="downloadProof()">下载</button>
+  </p>
+  <div id="msg"></div>
+
+  <!-- 用于触发浏览器下载的隐藏链接 -->
+  <a id="hidden-download-link" style="display:none;"></a>
+
+  <script>
+    function downloadProof() {
+      var id6 = document.getElementById('id6').value.trim();
+      var msg = document.getElementById('msg');
+      var link = document.getElementById('hidden-download-link');
+
+      if (!id6) {
+        msg.textContent = "请先输入身份证后6位";
+        return;
+      }
+
+      if (id6.length !== 6) {
+        msg.textContent = "请输入准确的6位字符";
+        return;
+      }
+
+      // 对应 img/身份证后6位.jpg 的实习证明文件
+      var url = 'img/' + id6 + '.jpg';
+
+      // 先尝试加载图片，确认存在再下载
+      var testImg = new Image();
+      testImg.onload = function() {
+        msg.textContent = "";
+        // 设置隐藏链接并触发点击下载
+        link.href = url;
+        link.download = id6 + '实习证明.jpg'; // 下载文件名：身份证后6位.jpg
+        link.click();
+      };
+      testImg.onerror = function() {
+        msg.textContent = "未找到该身份证后6位对应的实习证明，请检查输入是否正确或联系老师。";
+      };
+      testImg.src = url + "?t=" + Date.now(); // 防缓存
+    }
+  </script>
+</body>
+</html>
